@@ -1,4 +1,4 @@
-package com.rappelr.bloodmoon.config;
+package com.rappelr.bloodmoon.config.component;
 
 import java.util.ArrayList;
 import java.util.List;

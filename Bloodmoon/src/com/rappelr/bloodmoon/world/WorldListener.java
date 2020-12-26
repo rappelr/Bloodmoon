@@ -5,6 +5,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public interface WorldListener {
 	
@@ -19,5 +21,9 @@ public interface WorldListener {
 	public void onMobSpawn(EntitySpawnEvent event, boolean active);
 	
 	public void onPlayerSleep(PlayerBedEnterEvent event, boolean active);
+	
+	public void onPlayerJoin(PlayerJoinEvent event, boolean active);
+	
+	public void onPlayerLeave(PlayerQuitEvent event, boolean active);
 
 }

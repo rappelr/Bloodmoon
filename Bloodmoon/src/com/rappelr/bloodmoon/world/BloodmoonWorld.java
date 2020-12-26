@@ -2,7 +2,6 @@ package com.rappelr.bloodmoon.world;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -13,10 +12,12 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.rappelr.bloodmoon.Bloodmoon;
-import com.rappelr.bloodmoon.config.ConfigCommand;
-import com.rappelr.bloodmoon.config.ConfigSound;
+import com.rappelr.bloodmoon.config.component.ConfigCommand;
+import com.rappelr.bloodmoon.config.component.ConfigSound;
 import com.rappelr.bloodmoon.config.FluidSourceConfig;
 import com.rappelr.bloodmoon.mob.MobManager;
 import com.rappelr.bloodmoon.world.cache.WorldCache;
@@ -145,14 +146,12 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onDayBefore() {
-		// TODO Auto-generated method stub
-
+		Bloodmoon.getInstance().getLanguage().post("day-before-bloodmoon", world.getPlayers());
 	}
 
 	@Override
 	public void onStart() {
 		onContinue();
-		Bukkit.broadcastMessage("BLOODMOON STARTS IN " + world.getName());
 
 		if(soundOnStart != null)
 			soundOnStart.playAll(getWorld());
@@ -163,7 +162,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onContinue() {
-		Bukkit.broadcastMessage("BLOODMOON CONTINUING IN " + world.getName());
+		Bloodmoon.getInstance().getLanguage().post("bloodmoon-start", world.getPlayers());
 		world.setTime(Bloodmoon.getInstance().getWorldManager().getStartTime());
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		
@@ -172,7 +171,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onEnd() {
-		Bukkit.broadcastMessage("BLOODMOON ENDS IN " + world.getName());
+		Bloodmoon.getInstance().getLanguage().post("bloodmoon-end", world.getPlayers());
 		
 		world.setTime(Bloodmoon.getInstance().getWorldManager().getEndTime());
 
@@ -257,5 +256,17 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 	
 	private static WorldManager manager() {
 		return Bloodmoon.getInstance().getWorldManager();
+	}
+
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event, boolean active) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPlayerLeave(PlayerQuitEvent event, boolean active) {
+		// TODO Auto-generated method stub
+		
 	}
 }

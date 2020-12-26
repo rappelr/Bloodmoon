@@ -88,7 +88,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 		}
 		
 		// list worlds
-		else if(args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("world")) {
+		else if(args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("worlds")) {
 			
 			if(player != null && !player.hasPermission("bloodmoon.list")) {
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use that");

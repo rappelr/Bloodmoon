@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-import com.rappelr.bloodmoon.config.ConfigPotionEffect;
+import com.rappelr.bloodmoon.config.component.ConfigPotionEffect;
 
 import lombok.val;
 

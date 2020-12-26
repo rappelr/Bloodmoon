@@ -1,17 +1,51 @@
 enabled: true
-interval: 20
-duration: 10000
-permanent-bloodmoon: false
-commands-on-start:
-sound-on-start:
-commands-on-end:
-sound-on-end:
-ambient-sounds:
+
+clock:
+  interval: 20
+  duration: 10000
+  permanent-bloodmoon: false
+  
+behaviour:
+  despawn-items-on-death: false
+  despawn-experience-on-death: false
+  lightning-on-player-death: false
+  prevent-sleeping: false
+  shields-prevent-hit-effect: false
+  darken-sky: false
+  
+commands:
+  on-start:
+  on-end:
+  
+sounds:
+  on-start:
+  on-end:
+  ambient:
+  entity-hit:
+  player-death:
+
 mobs:
   zombie:
-    health-modifier: 5.0
-    hit-effect: "SLOW:1:3"
+    health-modifier: 1.0
+    damage-modifier: 1.0
+    experience-modifier: 1.0
+    hit-effect:
     equipment:
-      main-hand:
-        ==: org.bukkit.inventory.ItemStack
-        type: "DIAMOND_SWORD"
+    loottable:
+        
+  skeleton:
+    health-modifier: 1.0
+    damage-modifier: 1.0
+    experience-modifier: 1.0
+    hit-effect:
+    equipment:
+    loottable:
+    
+  creeper:
+    health-modifier: 1.0
+    damage-modifier: 1.0
+    experience-modifier: 1.0
+    hit-effect:
+    equipment:
+    loottable:
+    
