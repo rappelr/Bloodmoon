@@ -1,0 +1,17 @@
+enabled: true
+interval: 20
+duration: 10000
+permanent-bloodmoon: false
+commands-on-start:
+sound-on-start:
+commands-on-end:
+sound-on-end:
+ambient-sounds:
+mobs:
+  zombie:
+    health-modifier: 5.0
+    hit-effect: "SLOW:1:3"
+    equipment:
+      main-hand:
+        ==: org.bukkit.inventory.ItemStack
+        type: "DIAMOND_SWORD"

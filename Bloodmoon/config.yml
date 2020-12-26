@@ -1,0 +1,10 @@
+language:
+  day-before-bloodmoon:
+  bloodmoon-start:
+  bloodmoon-end:
+  death-message:
+  first-blood-message:
+
+world-time:
+  during: 13300
+  final: 23000
