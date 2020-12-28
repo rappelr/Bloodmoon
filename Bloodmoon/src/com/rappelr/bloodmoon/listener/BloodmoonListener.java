@@ -10,6 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.rappelr.bloodmoon.Bloodmoon;
 import com.rappelr.bloodmoon.world.BloodmoonWorld;
@@ -77,5 +78,14 @@ public class BloodmoonListener implements Listener {
 		if(world.isEnabled())
 			world.onPlayerLeave(e, world.getClock().isBloodmoon());
 	}
+	
+	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent e) {
+		BloodmoonWorld world = worlds.by(e.getPlayer().getWorld());
+		
+		if(world.isEnabled())
+			world.onPlayerRespawn(e, world.getClock().isBloodmoon());
+	}
+
 
 }

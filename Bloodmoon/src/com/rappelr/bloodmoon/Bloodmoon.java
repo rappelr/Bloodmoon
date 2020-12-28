@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.rappelr.bloodmoon.command.CommandExecutor;
-import com.rappelr.bloodmoon.config.ConfigCore;
+import com.rappelr.bloodmoon.config.Configuration;
 import com.rappelr.bloodmoon.config.LanguageConfiguration;
 import com.rappelr.bloodmoon.listener.BloodmoonListener;
 import com.rappelr.bloodmoon.world.WorldManager;
@@ -17,7 +17,7 @@ public class Bloodmoon extends JavaPlugin {
 	
 	@Getter private WorldManager worldManager;
 	
-	@Getter private ConfigCore configuration;
+	@Getter private Configuration configuration;
 	
 	@Getter private LanguageConfiguration language;
 	
@@ -39,6 +39,13 @@ public class Bloodmoon extends JavaPlugin {
 		getCommand("bloodmoon").setExecutor(new CommandExecutor());
 		
 	}
+
+	@Override
+    public void onDisable() {
+
+		worldManager.disable();
+		
+	}
 	
 	public void reload() {
 		reloadConfiguration();
@@ -46,7 +53,7 @@ public class Bloodmoon extends JavaPlugin {
 	}
 
 	private void reloadConfiguration() {
-		configuration = new ConfigCore("config.yml", this, true);
+		configuration = new Configuration("config.yml", this, true);
 		language.load();
 	}
 	

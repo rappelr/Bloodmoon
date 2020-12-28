@@ -12,6 +12,7 @@ behaviour:
   prevent-sleeping: false
   shields-prevent-hit-effect: false
   darken-sky: false
+  ambient-frequency: 30
   
 commands:
   on-start:

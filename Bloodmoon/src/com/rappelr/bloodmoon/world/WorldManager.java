@@ -61,6 +61,10 @@ public class WorldManager {
 	public BloodmoonWorld by(@NonNull Player player) {
 		return by(player.getWorld());
 	}
+
+	public void disable() {
+		worlds.forEach(b -> b.disable());
+	}
 	
 	private BloodmoonWorld register(World world) {
 		val bloodmoonWorld = new BloodmoonWorld(world);

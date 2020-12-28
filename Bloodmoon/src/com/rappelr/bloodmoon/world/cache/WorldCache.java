@@ -1,17 +1,17 @@
 package com.rappelr.bloodmoon.world.cache;
 
 import com.rappelr.bloodmoon.Bloodmoon;
-import com.rappelr.bloodmoon.config.Config;
+import com.rappelr.bloodmoon.config.Configuration;
 import com.rappelr.bloodmoon.world.BloodmoonWorld;
 
 import lombok.val;
 
 public class WorldCache {
 	
-	private final Config config;
+	private final Configuration config;
 	
 	{
-		config = new Config(".cache.yml", Bloodmoon.getInstance());
+		config = new Configuration(".cache.yml", Bloodmoon.getInstance(), true);
 	}
 
 	public Entry get(BloodmoonWorld world) {

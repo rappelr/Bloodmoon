@@ -6,12 +6,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.rappelr.bloodmoon.Bloodmoon;
+import com.rappelr.bloodmoon.config.LanguageConfiguration;
 import com.rappelr.bloodmoon.mob.BloodmoonMob;
 import com.rappelr.bloodmoon.mob.HumanMob;
 import com.rappelr.bloodmoon.world.BloodmoonWorld;
 import lombok.val;
 
 public class CommandExecutor implements org.bukkit.command.CommandExecutor {
+	
+	private final LanguageConfiguration lang = Bloodmoon.getInstance().getLanguage();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -28,7 +31,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			}
 			
 			if(!player.hasPermission("bloodmoon.checkdays")) {
-				sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+				lang.tell("no-permission", sender);
 				return true;
 			}
 			
@@ -59,7 +62,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 		else if(args[0].equalsIgnoreCase("reload")) {
 			
 			if(player != null && !player.hasPermission("bloodmoon.admin")) {
-				sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+				lang.tell("no-permission", sender);
 				return true;
 			}
 			
@@ -77,7 +80,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			}
 			
 			if(!player.hasPermission("bloodmoon.last")) {
-				sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+				lang.tell("no-permission", sender);
 				return true;
 			}
 			
@@ -91,7 +94,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 		else if(args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("worlds")) {
 			
 			if(player != null && !player.hasPermission("bloodmoon.list")) {
-				sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+				lang.tell("no-permission", sender);
 				return true;
 			}
 			
@@ -115,7 +118,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			
 			if(player != null) {
 				if(!player.hasPermission("bloodmoon.admin")) {
-					sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+					lang.tell("no-permission", sender);
 					return true;
 				}
 			} else if(args.length < 2) {
@@ -148,7 +151,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 
 			if(player != null) {
 				if(!player.hasPermission("bloodmoon.admin")) {
-					sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+					lang.tell("no-permission", sender);
 					return true;
 				}
 			} else if(args.length < 2) {
@@ -181,7 +184,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			
 			if(player != null) {
 				if(!player.hasPermission("bloodmoon.admin")) {
-					sender.sendMessage(ChatColor.RED + "You don't have permission to use that");
+					lang.tell("no-permission", sender);
 					return true;
 				}
 			} else if(args.length < 2) {

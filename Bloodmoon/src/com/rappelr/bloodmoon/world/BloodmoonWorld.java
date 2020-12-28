@@ -14,12 +14,16 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.rappelr.bloodmoon.Bloodmoon;
 import com.rappelr.bloodmoon.config.component.ConfigCommand;
 import com.rappelr.bloodmoon.config.component.ConfigSound;
+import com.rappelr.bloodmoon.effect.AmbientEffect;
+import com.rappelr.bloodmoon.effect.BossBarEffect;
 import com.rappelr.bloodmoon.config.FluidSourceConfig;
 import com.rappelr.bloodmoon.mob.MobManager;
+import com.rappelr.bloodmoon.utils.Toolkit;
 import com.rappelr.bloodmoon.world.cache.WorldCache;
 
 import lombok.AccessLevel;
@@ -34,28 +38,33 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	private static final WorldCache cache;
 
-	@Getter private final World world;
-
 	private final FluidSourceConfig config;
+	
+	private final BossBarEffect bossbarEffect;
+	
+	private final AmbientEffect ambientEffect;
+
+	@Getter private final World world;
 	
 	@Getter private final MobManager mobManager;
 
 	@Getter private final WorldClock clock;
 
-	@Getter private boolean enabled;
+	@Getter private boolean enabled, permanent, darkenSky;
 
 	@Getter(AccessLevel.PACKAGE)
 	private long duration;
 
-	@Getter private int interval;
+	@Getter private int interval, ambientFrequency;
 
-	@SuppressWarnings("unused")
-	private boolean permanent, despawnItems, despawnExperience, lightningOnDeath, noSleeping, noShieldEffect, darkenSky;
+	private boolean despawnItems, despawnExperience, lightningOnDeath, noSleeping, noShieldEffect, firstBlood;
 
 	private List<ConfigCommand> commandsOnStart, commandsOnEnd;
 
-	@SuppressWarnings("unused")
-	private ConfigSound soundOnStart, soundOnEnd, soundAmbient, soundOnHit, soundOnPlayerDeath;
+	private ConfigSound soundOnStart, soundOnEnd, soundOnHit, soundOnPlayerDeath;
+	
+	@Getter
+	private ConfigSound soundAmbient;
 
 	static {
 		cache = new WorldCache();
@@ -67,16 +76,21 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		config = new FluidSourceConfig(CONFIG_DIRECTORY + world.getName() + ".yml", "default_world.yml", Bloodmoon.getInstance());
 
 		mobManager = new MobManager();
+
+		bossbarEffect = new BossBarEffect(this);
+		
+		ambientEffect = new AmbientEffect(this);
+		
+		clock = new WorldClock(this);
 		
 		loadConfig();
 
-		if(!enabled) {
-			clock = null;
+		if(!enabled)
 			return;
-		}
 
-		clock = new WorldClock(this);
 		clock.setListener(this);
+		
+		firstBlood = false;
 	}
 
 	public void loadConfig() {
@@ -101,6 +115,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		noSleeping = c.getBoolean("prevent-sleeping", false);
 		noShieldEffect = c.getBoolean("shields-prevent-hit-effect", false);
 		darkenSky = c.getBoolean("darken-sky", false);
+		ambientFrequency = c.getInt("ambient-frequency", 0);
 		
 		//COMMANDS
 		commandsOnStart = ConfigCommand.of(c.getStringList("commands.on-start"));
@@ -117,11 +132,14 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		mobManager.load(config.getSource().getConfigurationSection("mobs"));
 
 		if(permanent) {
-			clock.disband();
+			clock.unregister();
 			if(!clock.isBloodmoon())
 				onContinue();
-		}
-
+		} else
+			clock.register();
+		
+		clock.load();
+		bossbarEffect.setup();
 	}
 	
 	public void startBloodmoon() {
@@ -130,6 +148,11 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 	
 	public void endBloodmoon() {
 		clock.onBloodmoonEnd();
+	}
+	
+	public void disable() {
+		bossbarEffect.clear();
+		clock.saveToCache();
 	}
 
 	public boolean isNight() {
@@ -145,8 +168,14 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 	}
 
 	@Override
+	public void tick() {
+		bossbarEffect.update();
+		ambientEffect.tick();
+	}
+
+	@Override
 	public void onDayBefore() {
-		Bloodmoon.getInstance().getLanguage().post("day-before-bloodmoon", world.getPlayers());
+		Bloodmoon.getInstance().getLanguage().tell("day-before-bloodmoon", world.getPlayers());
 	}
 
 	@Override
@@ -162,16 +191,18 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onContinue() {
-		Bloodmoon.getInstance().getLanguage().post("bloodmoon-start", world.getPlayers());
+		Bloodmoon.getInstance().getLanguage().tell("bloodmoon-start", world.getPlayers());
 		world.setTime(Bloodmoon.getInstance().getWorldManager().getStartTime());
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		
 		manager().getWorldBorderEffect().addAll(world.getPlayers().toArray(new Player[0]));
+		bossbarEffect.reset();
+		bossbarEffect.show();
 	}
 
 	@Override
 	public void onEnd() {
-		Bloodmoon.getInstance().getLanguage().post("bloodmoon-end", world.getPlayers());
+		Bloodmoon.getInstance().getLanguage().tell("bloodmoon-end", world.getPlayers());
 		
 		world.setTime(Bloodmoon.getInstance().getWorldManager().getEndTime());
 
@@ -184,6 +215,9 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
 		manager().getWorldBorderEffect().removeAll(world.getPlayers().toArray(new Player[0]));
+		bossbarEffect.clear();
+		
+		firstBlood = false;
 	}
 
 	@Override
@@ -204,6 +238,14 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		
 		if(soundOnPlayerDeath != null)
 			soundOnPlayerDeath.playAll(event.getEntity().getWorld());
+		
+		Bloodmoon.getInstance().getLanguage().tell("death-message", world.getPlayers(), "base", event.getDeathMessage());
+		event.setDeathMessage(null);
+		
+		if(!firstBlood) {
+			Bloodmoon.getInstance().getLanguage().tell("first-blood-message", world.getPlayers(), "player", event.getEntity().getName());
+			firstBlood = true;
+		}
 	}
 
 	@Override
@@ -260,13 +302,19 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event, boolean active) {
-		// TODO Auto-generated method stub
-		
+		if(active) {
+			manager().getWorldBorderEffect().add(event.getPlayer());
+			bossbarEffect.add(event.getPlayer());
+		}
 	}
 
 	@Override
 	public void onPlayerLeave(PlayerQuitEvent event, boolean active) {
-		// TODO Auto-generated method stub
-		
+		bossbarEffect.remove(event.getPlayer());
+	}
+
+	@Override
+	public void onPlayerRespawn(PlayerRespawnEvent event, boolean active) {
+		Toolkit.scheduleSync(() -> manager().getWorldBorderEffect().update(event.getPlayer()));
 	}
 }

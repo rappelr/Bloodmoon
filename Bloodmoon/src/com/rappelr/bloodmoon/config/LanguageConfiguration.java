@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversable;
 import org.bukkit.entity.Player;
 
 import com.rappelr.bloodmoon.Bloodmoon;
@@ -21,7 +24,7 @@ public class LanguageConfiguration {
 		protected static final char INSERT = '%', COLOR = '&';
 		protected static final String SPLITTER = ";;";
 		
-		abstract void post(String message, List<Player> players, String[] inserts);
+		abstract void post(List<Conversable> recievers, String[] inserts);
 
 		static Entry of(final String string) {
 			try {
@@ -31,8 +34,7 @@ public class LanguageConfiguration {
 				
 				return ChatMessage.of(string);
 				
-			} catch(ArrayIndexOutOfBoundsException e) {
-				Bukkit.getLogger().info("aioobe");}
+			} catch(ArrayIndexOutOfBoundsException e) {}
 			
 			return null;
 		}
@@ -44,15 +46,15 @@ public class LanguageConfiguration {
 		private final String base;
 
 		@Override
-		void post(final String message, final List<Player> players, final String[] inserts) {
+		void post(final List<Conversable> recievers, final String[] inserts) {
 			
 			String builder = base;
 			
 			for(int i = 0; i + 1 < inserts.length; i += 2)
 				builder = builder.replace(INSERT + inserts[i] + INSERT, inserts[i + 1]);
 			
-			for(Player player : players)
-				player.sendMessage(message);
+			final String r = builder;
+			recievers.forEach(c -> c.sendRawMessage(r));
 		}
 		
 		static ChatMessage of(final String string) throws ArrayIndexOutOfBoundsException {
@@ -67,7 +69,7 @@ public class LanguageConfiguration {
 
 		@SuppressWarnings("deprecation")
 		@Override
-		void post(final String message, final List<Player> players, final String[] inserts) {
+		void post(final List<Conversable> recievers, final String[] inserts) {
 			
 			String titleBuilder = titleBase, subtitleBuilder = subtitleBase;
 			
@@ -77,8 +79,10 @@ public class LanguageConfiguration {
 				else
 					subtitleBuilder = subtitleBuilder.replace(INSERT + inserts[i] + INSERT, inserts[i + 1]);
 			
-			for(Player player : players)
-				player.sendTitle(titleBuilder, subtitleBuilder);
+			for(Conversable c : recievers)
+				if(c instanceof Player)
+					((Player) c).sendTitle(titleBuilder, subtitleBuilder);
+				
 		}
 		
 		static TitleMessage of(final String string) throws ArrayIndexOutOfBoundsException {
@@ -89,25 +93,35 @@ public class LanguageConfiguration {
 	
 	private static final String FILE_NAME = "lang.yml";
 	
-	private final ConfigCore config;
+	private final Configuration config;
 	
 	private final HashMap<String, LanguageConfiguration.Entry> entries;
 	
 	{
-		config = new ConfigCore(FILE_NAME, Bloodmoon.getInstance(), true);
+		config = new Configuration(FILE_NAME, Bloodmoon.getInstance(), true);
 		entries = new HashMap<String, LanguageConfiguration.Entry>();
 	}
 	
 	@SuppressWarnings("serial")
-	public void post(final String message, final Player player, final String... insterts) {
-		post(message, new ArrayList<Player>() {{add(player);}}, insterts);
+	public void tell(final String message, final Conversable reciever, final String... insterts) {
+		post(message, new ArrayList<Conversable>() {{add(reciever);}}, insterts);
+	}
+
+	@SuppressWarnings("serial")
+	public void tell(final String message, final CommandSender reciever, final String... insterts) {
+		post(message, new ArrayList<Conversable>() {{add((ConsoleCommandSender) reciever);}}, insterts);
 	}
 	
-	public void post(final String message, final List<Player> players, final String... inserts) {
+	@SuppressWarnings("serial")
+	public void tell(final String message, final List<Player> players, final String... inserts) {
+		post(message, new ArrayList<Conversable>() {{addAll(players);}}, inserts);
+	}
+	
+	private void post(final String message, final List<Conversable> recievers, final String... inserts) {
 		if(!entries.containsKey(message))
 			Bukkit.getLogger().warning("Message key " + message + " not found in " + FILE_NAME);
 		else
-			entries.get(message).post(message, players, inserts);
+			entries.get(message).post(recievers, inserts);
 	}
 
 	public void load() {

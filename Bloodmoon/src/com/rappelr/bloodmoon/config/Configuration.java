@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.val;
 
-public class ConfigCore {
+public class Configuration {
 	
 	@Getter(AccessLevel.PROTECTED)
 	private final File file;
@@ -19,7 +19,7 @@ public class ConfigCore {
 	@Getter
 	private YamlConfiguration source;
 	
-	public ConfigCore(final String name, final JavaPlugin plugin, final boolean copy) {
+	public Configuration(final String name, final JavaPlugin plugin, final boolean copy) {
 		file = new File(plugin.getDataFolder(), name);
 		
 		if(!file.exists()) {
@@ -46,6 +46,22 @@ public class ConfigCore {
         } catch (IOException | InvalidConfigurationException exception) {
         	exception.printStackTrace();
         	return false;
+        }
+	}
+
+	public boolean contains(String key) {
+		return source.contains(key);
+	}
+
+	public void set(String key, Object value) {
+		source.set(key, value);
+	}
+
+	public void save() {
+		try {
+			getSource().save(getFile());
+        } catch (IOException e) {
+        	e.printStackTrace();
         }
 	}
 

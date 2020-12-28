@@ -1,6 +1,6 @@
 day-before-bloodmoon: "CHAT;;&cBloodmoon starts in 1 day"
 bloodmoon-start: "TITLE;;&cBloodmoon has started!;;A red light glooms over the horizon..."
 bloodmoon-end: "TITLE;;&cBloodmoon has ended!;;You survived the night!"
-death-message: "CHAT;;%base% $cduring the bloodmoon."
+death-message: "CHAT;;%base% &cduring the bloodmoon."
 first-blood-message: "CHAT;;&cFIRST BLOOD! %player% died."
 no-permission: "CHAT;;&cBYou do not have permission to use that."

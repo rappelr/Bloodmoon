@@ -77,8 +77,32 @@ public class WorldBorderEffect {
 				GENERAL_SPEED, GENERAL_SPEED);
 	}
 	
-	private void add(Player player) {
-		val p = of(player);
+	public void add(Player player) {
+		if(list.stream().anyMatch(p -> p.player.equals(player)))
+			return;
+		
+		pAdd(player);
+	}
+	
+	public void addAll(Player... players) {
+		for(Player p : players)
+			pAdd(p);
+	}
+	
+	public void removeAll(Player... players) {
+		for(Player p : players)
+			pRemove(p);
+	}
+	
+	public void update(Player player) {
+		val p = get(player);
+		
+		if(p != null)
+			updateGeneral(p);
+	}
+	
+	private void pAdd(Player player) {
+		val p = get(player);
 		
 		if(p != null)
 			p.stage = 0;
@@ -86,24 +110,14 @@ public class WorldBorderEffect {
 			list.add(new Phase(player));
 	}
 	
-	private void remove(Player player) {
-		val p = of(player);
+	private void pRemove(Player player) {
+		val p = get(player);
 		
 		if(p != null)
 			p.drain();
 	}
 	
-	public void addAll(Player... players) {
-		for(Player p : players)
-			add(p);
-	}
-	
-	public void removeAll(Player... players) {
-		for(Player p : players)
-			remove(p);
-	}
-	
-	private Phase of(Player player) {
+	private Phase get(Player player) {
 		for(Phase p : list)
 			if(p.player.equals(player))
 				return p;

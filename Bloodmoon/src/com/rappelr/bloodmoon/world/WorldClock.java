@@ -11,9 +11,11 @@ import com.rappelr.bloodmoon.utils.Toolkit;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class WorldClock {
 	
 	private static final long SUPER_INTERVAL = 20l, MINIMUM_CHECK_INTERVAL = 200l, STORE_INTERVAL = 1200l;
@@ -34,21 +36,19 @@ public class WorldClock {
 		clocks = new ArrayList<WorldClock>();
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Bloodmoon.getInstance(), 
-				() -> clocks.forEach(c -> c.checkNight()), 1l, SUPER_INTERVAL);
+				() -> clocks.forEach(c -> c.tick()), 1l, SUPER_INTERVAL);
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Bloodmoon.getInstance(), 
 				() -> clocks.forEach(c -> c.saveToCache()), 1l, STORE_INTERVAL);
 	}
 	
-	WorldClock(BloodmoonWorld world) {
-		this.world = world;
-		
+	void load() {
 		val cache = world.getCache();
 		lastBloodmoon = cache.getLastBloodmoon();
 		lastNight = cache.getLastNight();
 		isBloodmoon = cache.isBloodmoon();
-		
-		WorldClock.clocks.add(this);
+
+		Bukkit.getLogger().info("Loaded cache, lastBloodmoon: " + lastBloodmoon + " lastNight: " + lastNight);
 
 		if(isBloodmoon) {
 			if(lastNight < 0)
@@ -61,12 +61,22 @@ public class WorldClock {
 				Toolkit.scheduleSync(() -> onBloodmoonEnd());
 			}
 		}
-
+	}
+	
+	void register() {
+		WorldClock.clocks.add(this);
 	}
 
-	void disband() {
+	void unregister() {
 		if(WorldClock.clocks.contains(this))
 			WorldClock.clocks.remove(this);
+	}
+	
+	private void tick() {
+		checkNight();
+		
+		if(isBloodmoon)
+			listener.tick();
 	}
 	
 	private void checkNight() {
@@ -78,9 +88,8 @@ public class WorldClock {
 		}
 		
 		lastNight += SUPER_INTERVAL;
-		val posNight = lastNight >= 0;
 
-		if(isBloodmoon && posNight)
+		if(isBloodmoon && lastNight >= 0)
 			onBloodmoonEnd();
 	}
 	
@@ -114,6 +123,11 @@ public class WorldClock {
 		saveToCache();
 	}
 	
+	void saveToCache() {
+		world.setCache(lastBloodmoon, lastNight);
+		Bukkit.getLogger().info("Saved cache, lastBloodmoon: " + lastBloodmoon + " lastNight: " + lastNight);
+	}
+	
 	public int daysLeft() {
 		return lastBloodmoon >= world.getInterval() ? 0 : world.getInterval() - lastBloodmoon;
 	}
@@ -121,9 +135,12 @@ public class WorldClock {
 	public static void clear() {
 		clocks.clear();
 	}
-	
-	private void saveToCache() {
-		world.setCache(lastBloodmoon, lastNight);
+
+	public double process() {
+		if(!isBloodmoon)
+			return 0d;
+		
+		return (0d - lastNight) / world.getDuration();
 	}
 
 }
@@ -137,5 +154,7 @@ interface WorldClockListener {
 	public void onContinue();
 	
 	public void onEnd();
+	
+	public void tick();
 	
 }

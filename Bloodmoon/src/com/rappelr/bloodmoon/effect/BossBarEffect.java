@@ -1,36 +1,73 @@
 package com.rappelr.bloodmoon.effect;
 
-import java.util.List;
-
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import com.rappelr.bloodmoon.world.BloodmoonWorld;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class BossBarEffect {
 	
-	private final BossBar bossbar;
+	private final BloodmoonWorld world;
 	
-	{
-		bossbar = null;//Bukkit.createBossBar(title, color, style, flags)
+	private BossBar bossbar;
+	
+	public void setup() {
+		if(bossbar != null)
+			clear();
+		
+		if(world.isDarkenSky()) {
+			bossbar = Bukkit.createBossBar("Bloodmoon",
+                    BarColor.RED,
+                    BarStyle.SEGMENTED_12,
+                    BarFlag.CREATE_FOG,
+                    BarFlag.DARKEN_SKY
+            );
+		} else {
+			bossbar = Bukkit.createBossBar("Bloodmoon",
+                    BarColor.RED,
+                    BarStyle.SEGMENTED_12
+            );
+		}
+		
+		reset();
 	}
 	
-	public void show(final List<Player> players) {
-		players.forEach(bossbar::addPlayer);
+	public void reset() {
+		if(bossbar != null)
+			bossbar.setProgress(world.isPermanent() ? 1d : 0d);
+	}
+	
+	public void update() {
+		if(world.isPermanent() || bossbar == null)
+			return;
+		
+		bossbar.setProgress(world.getClock().process());
+	}
+	
+	public void show() {
+		if(bossbar != null)
+			world.getWorld().getPlayers().forEach(bossbar::addPlayer);
 	}
 	
 	public void clear() {
-		bossbar.removeAll();
-	}
-	
-	public void update(final double percentile) {
-		bossbar.setProgress(percentile);
+		if(bossbar != null)
+			bossbar.removeAll();
 	}
 	
 	public void add(final Player player) {
-		bossbar.addPlayer(player);
+		if(bossbar != null)
+			bossbar.addPlayer(player);
 	}
 	
 	public void remove(final Player player) {
-		if(bossbar.getPlayers().contains(player))
+		if(bossbar != null && bossbar.getPlayers().contains(player))
 			bossbar.removePlayer(player);
 	}
 
