@@ -26,6 +26,7 @@ import com.rappelr.bloodmoon.mob.MobManager;
 import com.rappelr.bloodmoon.utils.Toolkit;
 import com.rappelr.bloodmoon.world.cache.WorldCache;
 
+import dev.lone.itemsadder.c;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,6 +69,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	static {
 		cache = new WorldCache();
+		cache.load();
 	}
 
 	public BloodmoonWorld(World world) {
@@ -140,6 +142,10 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		
 		clock.load();
 		bossbarEffect.setup();
+	}
+	
+	public static void reloadCache() {
+		cache.load();
 	}
 	
 	public void startBloodmoon() {

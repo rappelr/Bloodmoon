@@ -37,6 +37,7 @@ public class WorldManager {
 	
 	public void reload() {
 		loadTimes();
+		BloodmoonWorld.reloadCache();
 		worlds.forEach(w -> w.loadConfig());
 	}
 	
