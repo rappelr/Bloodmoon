@@ -38,7 +38,7 @@ public class ConfigSound {
 		return null;
 	}
 	
-	public static List<ConfigSound> of(List<String> strings) {
+	public static ConfigSound[] of(List<String> strings) {
 		if(strings == null)
 			return null;
 		
@@ -46,7 +46,7 @@ public class ConfigSound {
 		strings.forEach(s -> result.add(ConfigSound.of(s)));
 		result.removeIf(Objects::isNull);
 		
-		return result;
+		return result.toArray(new ConfigSound[0]);
 	}
 	
 	public void playAll() {

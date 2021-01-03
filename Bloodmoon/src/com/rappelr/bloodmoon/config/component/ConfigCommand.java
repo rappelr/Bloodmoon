@@ -29,7 +29,7 @@ public class ConfigCommand {
 		return new ConfigCommand(type, type.snip(string));
 	}
 	
-	public static List<ConfigCommand> of(List<String> strings) {
+	public static ConfigCommand[] of(List<String> strings) {
 		if(strings == null)
 			return null;
 		
@@ -37,7 +37,7 @@ public class ConfigCommand {
 		strings.forEach(s -> result.add(ConfigCommand.of(s)));
 		result.removeIf(Objects::isNull);
 		
-		return result;
+		return result.toArray(new ConfigCommand[0]);
 	}
 
 	public void run(World world) {

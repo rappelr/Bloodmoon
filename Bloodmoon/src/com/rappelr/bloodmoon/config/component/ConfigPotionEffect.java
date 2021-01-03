@@ -53,7 +53,7 @@ public class ConfigPotionEffect {
 		return null;
 	}
 	
-	public static List<ConfigPotionEffect> of(List<String> strings) {
+	public static ConfigPotionEffect[] of(List<String> strings) {
 		if(strings == null)
 			return null;
 		
@@ -61,7 +61,7 @@ public class ConfigPotionEffect {
 		strings.forEach(s -> result.add(ConfigPotionEffect.of(s)));
 		result.removeIf(Objects::isNull);
 		
-		return result;
+		return result.toArray(new ConfigPotionEffect[0]);
 	}
 	
 	public void applyAll() {
