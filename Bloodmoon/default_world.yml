@@ -26,27 +26,4 @@ sounds:
   player-death:
 
 mobs:
-  zombie:
-    health-modifier: 1.0
-    damage-modifier: 1.0
-    experience-modifier: 1.0
-    hit-effect:
-    equipment:
-    loottable:
-        
-  skeleton:
-    health-modifier: 1.0
-    damage-modifier: 1.0
-    experience-modifier: 1.0
-    hit-effect:
-    equipment:
-    loottable:
-    
-  creeper:
-    health-modifier: 1.0
-    damage-modifier: 1.0
-    experience-modifier: 1.0
-    hit-effect:
-    equipment:
-    loottable:
     

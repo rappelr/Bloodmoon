@@ -103,13 +103,16 @@ public class LanguageConfiguration {
 	}
 	
 	@SuppressWarnings("serial")
-	public void tell(final String message, final Conversable reciever, final String... insterts) {
+	public void tell(final String message, final Player reciever, final String... insterts) {
 		post(message, new ArrayList<Conversable>() {{add(reciever);}}, insterts);
 	}
 
 	@SuppressWarnings("serial")
 	public void tell(final String message, final CommandSender reciever, final String... insterts) {
-		post(message, new ArrayList<Conversable>() {{add((ConsoleCommandSender) reciever);}}, insterts);
+		if(reciever instanceof ConsoleCommandSender)
+			post(message, new ArrayList<Conversable>() {{add((ConsoleCommandSender) reciever);}}, insterts);
+		else
+			post(message, new ArrayList<Conversable>() {{add((Conversable) reciever);}}, insterts);
 	}
 	
 	@SuppressWarnings("serial")

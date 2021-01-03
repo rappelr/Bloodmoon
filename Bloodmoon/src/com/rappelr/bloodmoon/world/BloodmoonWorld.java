@@ -1,7 +1,5 @@
 package com.rappelr.bloodmoon.world;
 
-import java.util.List;
-
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -26,7 +24,6 @@ import com.rappelr.bloodmoon.mob.MobManager;
 import com.rappelr.bloodmoon.utils.Toolkit;
 import com.rappelr.bloodmoon.world.cache.WorldCache;
 
-import dev.lone.itemsadder.c;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,12 +57,12 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	private boolean despawnItems, despawnExperience, lightningOnDeath, noSleeping, noShieldEffect, firstBlood;
 
-	private List<ConfigCommand> commandsOnStart, commandsOnEnd;
+	private ConfigCommand[] commandsOnEnd, commandsOnStart;
 
 	private ConfigSound soundOnStart, soundOnEnd, soundOnHit, soundOnPlayerDeath;
 	
 	@Getter
-	private ConfigSound soundAmbient;
+	private ConfigSound[] soundAmbient;
 
 	static {
 		cache = new WorldCache();
@@ -111,13 +108,13 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		permanent = c.getBoolean("clock.permanent-bloodmoon", false);
 		
 		//BEHAVIOUR
-		despawnItems = c.getBoolean("despawn-items-on-death", false);
-		despawnExperience = c.getBoolean("despawn-experience-on-death", false);
-		lightningOnDeath = c.getBoolean("lightning-on-player-death", false);
-		noSleeping = c.getBoolean("prevent-sleeping", false);
-		noShieldEffect = c.getBoolean("shields-prevent-hit-effect", false);
-		darkenSky = c.getBoolean("darken-sky", false);
-		ambientFrequency = c.getInt("ambient-frequency", 0);
+		despawnItems = c.getBoolean("behaviour.despawn-items-on-death", false);
+		despawnExperience = c.getBoolean("behaviour.despawn-experience-on-death", false);
+		lightningOnDeath = c.getBoolean("behaviour.lightning-on-player-death", false);
+		noSleeping = c.getBoolean("behaviour.prevent-sleeping", false);
+		noShieldEffect = c.getBoolean("behaviour.shields-prevent-hit-effect", false);
+		darkenSky = c.getBoolean("behaviour.darken-sky", false);
+		ambientFrequency = c.getInt("behaviour.ambient-frequency", 20);
 		
 		//COMMANDS
 		commandsOnStart = ConfigCommand.of(c.getStringList("commands.on-start"));
@@ -126,7 +123,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		//SOUNDS
 		soundOnStart = ConfigSound.of(c.getString("sounds.on-start"));
 		soundOnEnd = ConfigSound.of(c.getString("sounds.on-end"));
-		soundAmbient = ConfigSound.of(c.getString("sounds.ambient"));
+		soundAmbient = ConfigSound.of(c.getStringList("sounds.ambient"));
 		soundOnHit = ConfigSound.of(c.getString("sounds.entity-hit"));
 		soundOnPlayerDeath = ConfigSound.of(c.getString("sounds.player-death"));
 		
@@ -181,7 +178,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 
 	@Override
 	public void onDayBefore() {
-		Bloodmoon.getInstance().getLanguage().tell("day-before-bloodmoon", world.getPlayers());
+		Bloodmoon.getInstance().getLanguage().tell("bloodmoon-day-before", world.getPlayers());
 	}
 
 	@Override
@@ -192,7 +189,8 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 			soundOnStart.playAll(getWorld());
 		
 		if(commandsOnStart != null)
-			commandsOnStart.forEach(c -> c.run(getWorld()));
+			for(ConfigCommand c : commandsOnStart)
+				c.run(getWorld());
 	}
 
 	@Override
@@ -216,7 +214,8 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 			soundOnEnd.playAll(getWorld());
 		
 		if(commandsOnEnd != null)
-			commandsOnEnd.forEach(c -> c.run(getWorld()));
+			for(ConfigCommand c : commandsOnEnd)
+				c.run(getWorld());
 		
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
@@ -245,11 +244,11 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		if(soundOnPlayerDeath != null)
 			soundOnPlayerDeath.playAll(event.getEntity().getWorld());
 		
-		Bloodmoon.getInstance().getLanguage().tell("death-message", world.getPlayers(), "base", event.getDeathMessage());
+		Bloodmoon.getInstance().getLanguage().tell("bloodmoon-death", world.getPlayers(), "base", event.getDeathMessage());
 		event.setDeathMessage(null);
 		
 		if(!firstBlood) {
-			Bloodmoon.getInstance().getLanguage().tell("first-blood-message", world.getPlayers(), "player", event.getEntity().getName());
+			Bloodmoon.getInstance().getLanguage().tell("bloodmoon-first-blood", world.getPlayers(), "player", event.getEntity().getName());
 			firstBlood = true;
 		}
 	}
@@ -301,10 +300,6 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		if(active && noSleeping)
 			event.setCancelled(true);
 	}
-	
-	private static WorldManager manager() {
-		return Bloodmoon.getInstance().getWorldManager();
-	}
 
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event, boolean active) {
@@ -322,5 +317,9 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 	@Override
 	public void onPlayerRespawn(PlayerRespawnEvent event, boolean active) {
 		Toolkit.scheduleSync(() -> manager().getWorldBorderEffect().update(event.getPlayer()));
+	}
+	
+	private static WorldManager manager() {
+		return Bloodmoon.getInstance().getWorldManager();
 	}
 }

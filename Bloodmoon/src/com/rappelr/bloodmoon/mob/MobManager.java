@@ -32,8 +32,12 @@ public class MobManager {
 	}
 	
 	public BloodmoonMob of(final Entity entity) {
+		return of(entity.getName());
+	}
+	
+	public BloodmoonMob of(final String name) {
 		for(BloodmoonMob type : mobs)
-			if(type.is(entity))
+			if(type.is(name))
 				return type;
 		return null;
 	}

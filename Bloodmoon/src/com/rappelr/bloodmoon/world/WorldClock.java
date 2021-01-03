@@ -48,8 +48,6 @@ public class WorldClock {
 		lastNight = cache.getLastNight();
 		isBloodmoon = cache.isBloodmoon();
 
-		Bukkit.getLogger().info("Loaded cache, lastBloodmoon: " + lastBloodmoon + " lastNight: " + lastNight);
-
 		if(isBloodmoon) {
 			if(lastNight < 0)
 				Toolkit.scheduleSync(() -> {
@@ -125,7 +123,6 @@ public class WorldClock {
 	
 	void saveToCache() {
 		world.setCache(lastBloodmoon, lastNight);
-		Bukkit.getLogger().info("Saved cache, lastBloodmoon: " + lastBloodmoon + " lastNight: " + lastNight);
 	}
 	
 	public int daysLeft() {

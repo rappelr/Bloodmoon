@@ -2,7 +2,6 @@ package com.rappelr.bloodmoon.mob;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -64,8 +63,8 @@ public class BloodmoonMob {
 		return experience * experienceModifier;
 	}
 
-	boolean is(Entity entity) {
-		return name.equalsIgnoreCase(entity.getType().name());
+	boolean is(String name) {
+		return name.equalsIgnoreCase(this.name);
 	}
 
 	public String details() {
