@@ -16,7 +16,7 @@ public class YamlUtil {
 	
 	public void copy(@NonNull final String source, @NonNull final String destination) {
 		try {
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(Bloodmoon.getInstance().getResource("default_world.yml")));
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(Bloodmoon.getInstance().getResource(source)));
 			
 			val lines = new ArrayList<String>();
 			

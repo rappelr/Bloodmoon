@@ -3,19 +3,16 @@ package com.rappelr.bloodmoon.config;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.rappelr.bloodmoon.utils.YamlUtil;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.val;
 
 public class FluidSourceConfig {
-	
-	private static final YamlUtil util = new YamlUtil();
 
 	@Getter(AccessLevel.PROTECTED)
 	private final File file;
@@ -27,9 +24,10 @@ public class FluidSourceConfig {
 		file = new File(plugin.getDataFolder(), name);
 		
 		if(!file.exists()) {
+			Bukkit.getLogger().info("[Bloodmoon] world yaml " + name + " not found, generating new one");
 			file.getParentFile().mkdirs();
 			
-			util.copy(source, file.getAbsolutePath());
+			Configuration.util.copy("res/" + source, file.getAbsolutePath());
 		}
 				
 		this.source = new YamlConfiguration();

@@ -54,6 +54,8 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 	private long duration;
 
 	@Getter private int interval, ambientFrequency;
+	
+	private int originalSpawnRate, spawnRate;
 
 	private boolean despawnItems, despawnExperience, lightningOnDeath, noSleeping, noShieldEffect, firstBlood;
 
@@ -83,6 +85,8 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		clock = new WorldClock(this);
 		
 		loadConfig();
+		
+		originalSpawnRate = world.getMonsterSpawnLimit();
 
 		if(!enabled)
 			return;
@@ -114,7 +118,8 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		noSleeping = c.getBoolean("behaviour.prevent-sleeping", false);
 		noShieldEffect = c.getBoolean("behaviour.shields-prevent-hit-effect", false);
 		darkenSky = c.getBoolean("behaviour.darken-sky", false);
-		ambientFrequency = c.getInt("behaviour.ambient-frequency", 20);
+		ambientFrequency = c.getInt("behaviour.ambient-frequency", 30);
+		spawnRate = c.getInt("behaviour.mob-spawn-rate", 25);
 		
 		//COMMANDS
 		commandsOnStart = ConfigCommand.of(c.getStringList("commands.on-start"));
@@ -198,6 +203,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		Bloodmoon.getInstance().getLanguage().tell("bloodmoon-start", world.getPlayers());
 		world.setTime(Bloodmoon.getInstance().getWorldManager().getStartTime());
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		world.setMonsterSpawnLimit(spawnRate);
 		
 		manager().getWorldBorderEffect().addAll(world.getPlayers().toArray(new Player[0]));
 		bossbarEffect.reset();
@@ -218,6 +224,7 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 				c.run(getWorld());
 		
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+		world.setMonsterSpawnLimit(originalSpawnRate);
 
 		manager().getWorldBorderEffect().removeAll(world.getPlayers().toArray(new Player[0]));
 		bossbarEffect.clear();

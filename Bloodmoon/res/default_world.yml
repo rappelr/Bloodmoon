@@ -13,6 +13,7 @@ behaviour:
   shields-prevent-hit-effect: false
   darken-sky: false
   ambient-frequency: 30
+  mob-spawn-rate: 25
   
 commands:
   on-start:

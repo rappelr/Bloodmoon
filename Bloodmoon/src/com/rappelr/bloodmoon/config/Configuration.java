@@ -3,15 +3,20 @@ package com.rappelr.bloodmoon.config;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.rappelr.bloodmoon.utils.YamlUtil;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.val;
 
 public class Configuration {
+	
+	static final YamlUtil util = new YamlUtil();
 	
 	@Getter(AccessLevel.PROTECTED)
 	private final File file;
@@ -23,9 +28,10 @@ public class Configuration {
 		file = new File(plugin.getDataFolder(), name);
 		
 		if(!file.exists()) {
+			Bukkit.getLogger().info("[Bloodmoon] " + name + " not found, copying from jar");
 			file.getParentFile().mkdirs();
 			if(copy)
-				plugin.saveResource(name, false);
+				util.copy("res/" + name, file.getAbsolutePath());
 			else
 				try {
 					file.createNewFile();
