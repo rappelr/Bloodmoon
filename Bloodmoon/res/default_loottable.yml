@@ -1,0 +1,22 @@
+# Default generated loottable yaml
+#
+# will still do a tutorial for this
+#
+ex_simple:
+  format: simple
+  chance: 0.0
+  item: DIAMOND_SWORD
+  amount: 5
+  
+ex_serialized:
+  format: serialized
+  chance: 0.0
+  item:
+    ==: "org.bukkit.inventory.ItemStack"
+    type: "DIAMOND_SWORD"
+    amount: 1
+  
+ex_itemsadder:
+  format: itemsadder
+  chance: 0.0
+  item: itemsadder:ruby_legs

@@ -1,3 +1,11 @@
+# Bloodmoon language yaml
+#
+# TUTORIAL:
+# ChatColor char & ex. &cThis text is red
+# Chat message format: CHAT;;message
+# Title message format: TITLE;;title;;subtitle
+# Placeholders are message specific, all available placeholders have been used in the default messages
+#
 bloodmoon-day-before: "CHAT;;&cBloodmoon starts in 1 day"
 bloodmoon-start: "TITLE;;&cBloodmoon has started!;;A red light glooms over the horizon..."
 bloodmoon-end: "TITLE;;&cBloodmoon has ended!;;You survived the night!"

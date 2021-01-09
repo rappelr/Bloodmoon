@@ -7,7 +7,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
+import com.rappelr.bloodmoon.Bloodmoon;
 import com.rappelr.bloodmoon.config.component.ConfigPotionEffect;
+import com.rappelr.bloodmoon.loottable.LootTable;
 
 import lombok.val;
 
@@ -38,7 +40,7 @@ public class HumanMob extends BloodmoonMob {
 		
 		val effect = ConfigPotionEffect.of(section.getString("hit-effect"));
 		
-		LootTable loottable = section.contains("loottable") ? LootTable.of(section.getConfigurationSection("loottable")) : null;
+		LootTable loottable = section.contains("loottable") ? Bloodmoon.getInstance().getLootTableManager().get(section.getString("loottable")) : null;
 		
 		ItemStack[] equipment = new ItemStack[] {
 			section.getItemStack("equipment.main-hand"),

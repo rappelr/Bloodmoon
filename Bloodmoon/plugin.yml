@@ -4,12 +4,13 @@ main: com.rappelr.bloodmoon.Bloodmoon
 authors: [Rappelr]
 api-version: 1.14
 softdepend: [ItemsAdder]
+load: POSTWORLD
 description: A Bloodmoon plugin for Alterria
 commands:
   bloodmoon:
     description: Core command, try /bm help
     usage: /bloodmoon help
-    aliases: [bm, bmn]
+    aliases: [bm]
 permissions:
   bloodmoon.checkdays:
     description: Allows a user to check the amount of days until the next bloodmoon

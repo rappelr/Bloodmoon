@@ -33,6 +33,8 @@ public class WorldManager {
 		worlds = new ArrayList<BloodmoonWorld>();
 		
 		Bukkit.getWorlds().forEach(this::register);
+		
+		Bukkit.getLogger().info("[Bloodmoon] loaded " + worlds.size() + " worlds");
 	}
 	
 	public void reload() {

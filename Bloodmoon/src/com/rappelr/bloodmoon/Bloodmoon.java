@@ -7,6 +7,7 @@ import com.rappelr.bloodmoon.command.CommandExecutor;
 import com.rappelr.bloodmoon.config.Configuration;
 import com.rappelr.bloodmoon.config.LanguageConfiguration;
 import com.rappelr.bloodmoon.listener.BloodmoonListener;
+import com.rappelr.bloodmoon.loottable.LootTableManager;
 import com.rappelr.bloodmoon.world.WorldManager;
 
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class Bloodmoon extends JavaPlugin {
 	@Getter private static Bloodmoon instance;
 	
 	@Getter private WorldManager worldManager;
+	
+	@Getter private LootTableManager lootTableManager;
 	
 	@Getter private Configuration configuration;
 	
@@ -27,17 +30,17 @@ public class Bloodmoon extends JavaPlugin {
 
 	@Override
     public void onEnable() {
-
 		language = new LanguageConfiguration();
 
 		reloadConfiguration();
+		
+		lootTableManager = new LootTableManager();
 		
 		worldManager = new WorldManager();
 		
 		Bukkit.getPluginManager().registerEvents(new BloodmoonListener(), this);
 		
 		getCommand("bloodmoon").setExecutor(new CommandExecutor());
-		
 	}
 
 	@Override
@@ -47,8 +50,10 @@ public class Bloodmoon extends JavaPlugin {
 		
 	}
 	
-	public void reload() {
-		reloadConfiguration();
+	public void reload(boolean ia) {
+		if(!ia)
+			reloadConfiguration();
+		lootTableManager.reload();
 		worldManager.reload();
 	}
 

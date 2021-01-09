@@ -1,10 +1,23 @@
+# Default generated world yaml
+#
+# all changes to normal minecraft behaviour only take effect during a bloodmoon
+#
+# Enable or disable the world, when disabling it the plugin will waste no resources on it
 enabled: true
-
+#
+# bloodmoon clock settings
+# interval is the interval in days between bloodmoons
+# duration is the duration of a bloodmoon in ticks, 10000 is the normal length of a night
 clock:
   interval: 20
   duration: 10000
   permanent-bloodmoon: false
-  
+#
+# most of these speak for themselves
+# ambient-frequency is the minimal delay in seconds between ambient sounds
+# the delay is calculated: ambient-frequency * random factor between 1 and 2
+# ^ if a dev ever looks at the code for that, don't blaze me I know its not completely accurate
+# so on average it should sound every 1.5 * ambient-frequency seconds
 behaviour:
   despawn-items-on-death: false
   despawn-experience-on-death: false
@@ -14,17 +27,57 @@ behaviour:
   darken-sky: false
   ambient-frequency: 30
   mob-spawn-rate: 25
-  
+#
+# You must append a ;s, ;f or ;p at the end of the command:
+# using ;s runs the command as the server. Once
+# using ;f runs the command as the server, for each player. use $p as the player placeholder
+# using ;p runs the command as the player, for each player. $p also applies
+# For all options, $w will be replaced by the world name
 commands:
   on-start:
   on-end:
-  
+#
+# sound format: name;volume;pitch
+# ex. minecraft:ambient.cave;1.0;0.7
+# both pitch and volume can be left out
+# note that ambient is in list format, a random one from the list will be picked everytime
+# eg.  ambient:
+#        - "minecraft:ambient.cave";1.0;0.7
+#        - "minecraft:ambient.crimson_forest.mood"
 sounds:
   on-start:
   on-end:
   ambient:
   entity-hit:
   player-death:
-
+#
+# the skeleton has been placed here as an example it can be removed but all values are set to minecraft default anyway
+# all modifiers just multiply the original value by their factor
+# hit-effect is the potion effect applied when you get hit by the mob
+# all except type can be left out
+# duration is in ticks, is_ambient, show_particles and show_icon are all true or false values
+# effect format: type;duration;amplifier;is_ambient;show_particles;show_icon
+# default values: -;30;1;false;false;false
+# ex. SLOW;100;3;false
+# this will apply slow 3 for 5 seconds
+# mob equipment is only available for the following mobs: zombie, husk, skeleton, stray, wither_skeletor
+# slot names: main-hand, off-hand, helmet, chestplate, leggings, boots
+# ex.  equipment:
+#        main-hand:
+#          ==: org.bukkit.inventory.ItemStack
+#          type: WOODEN_SWORD
+#        helmet:
+#          ==: org.bukkit.inventory.ItemStack
+#          type: DIAMOND_HELMET
+# if you're smart you can use a loottable to automatically serialized the items you want
+# speaking of loottables, loottable will just take the name of a loottable
+# if you created one using "/bm loot <name> create" you will still have to reload the plugin before it applies
 mobs:
+  skeleton:
+    health-modifier: 1.0
+    damage-modifier: 1.0
+    experience-modifier: 1.0
+    hit-effect:
+    equipment:
+    loottable:
     

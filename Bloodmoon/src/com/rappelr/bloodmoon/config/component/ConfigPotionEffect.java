@@ -25,7 +25,7 @@ public class ConfigPotionEffect {
 		if(string == null || string.isEmpty())
 			return null;
 		
-		val split = string.split(":");
+		val split = string.split(";");
 		
 		val effect = PotionEffectType.getByName(split[0]);
 		
@@ -39,7 +39,7 @@ public class ConfigPotionEffect {
 			return new ConfigPotionEffect(new PotionEffect(effect, Integer.parseInt(split[1]), 0));
 		
 		if(split.length == 3)
-			return new ConfigPotionEffect(new PotionEffect(effect, Integer.parseInt(split[1]), Integer.parseInt(split[2])));
+			return new ConfigPotionEffect(new PotionEffect(effect, Integer.parseInt(split[1]), Integer.parseInt(split[2]) - 1));
 
 		if(split.length == 4)
 			return new ConfigPotionEffect(new PotionEffect(effect, Integer.parseInt(split[1]), Integer.parseInt(split[2]) - 1, Boolean.parseBoolean(split[3])));

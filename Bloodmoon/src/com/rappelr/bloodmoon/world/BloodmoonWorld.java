@@ -84,9 +84,9 @@ public class BloodmoonWorld implements WorldListener, WorldClockListener {
 		
 		clock = new WorldClock(this);
 		
-		loadConfig();
-		
 		originalSpawnRate = world.getMonsterSpawnLimit();
+		
+		loadConfig();
 
 		if(!enabled)
 			return;

@@ -1,3 +1,9 @@
+# Global plugin yaml
+# might remove this yaml, or move some more world config this in here to be static
+#
+# these are the values the world time will be set to at the begin and end of the bloodmoon
+# used to keep that red glow over the horizon
+# during the bloodmoon the day night cycle of the world is disabled to keep the sky in the same position
 world-time:
   during: 13300
   final: 23000
