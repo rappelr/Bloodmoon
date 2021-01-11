@@ -1,28 +1,22 @@
-package com.rappelr.bloodmoon.utils;
+package com.rappelr.bloodmoon.hook;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import com.rappelr.bloodmoon.Bloodmoon;
 import dev.lone.itemsadder.api.ItemsAdder;
 import dev.lone.itemsadder.api.Events.ItemsAdderFirstLoadEvent;
-import lombok.Getter;
 
-public class ItemsAdderHook implements Listener {
+public class ItemsAdderHook extends Hook {
 	
-	@Getter
-	private boolean present;
-	
-	{
-		present = Bloodmoon.getInstance().getServer().getPluginManager().getPlugin("ItemsAdder") != null;
-		if(!present)
-			Bukkit.getLogger().info("[Bloodmoon] ItemsAdder not detected, dependant features disabled");
-		else {
-			Bukkit.getPluginManager().registerEvents(this, Bloodmoon.getInstance());
+	public ItemsAdderHook() {
+		super("ItemsAdder");
+		
+		if(isPresent())
 			Bukkit.getLogger().info("[Bloodmoon] Waiting for ItemsAdder to finish loading...");
-		}
+		else
+			Bukkit.getLogger().info("[Bloodmoon] ItemsAdder not detected, dependant features disabled");
 	}
 
 	public boolean isCustom(ItemStack item) {

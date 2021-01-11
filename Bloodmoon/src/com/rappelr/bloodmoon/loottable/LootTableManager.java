@@ -30,6 +30,8 @@ public class LootTableManager {
 		if(!directory.exists())
 			directory.mkdir();
 		
+		LootItem.attemptHook();
+		
 		List<LootTable> notFound = new ArrayList<LootTable>();
 		notFound.addAll(lootTables);
 		

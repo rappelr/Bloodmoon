@@ -14,7 +14,7 @@ public class AmbientEffect {
 	
 	public void tick() {
 		
-		if(world.getSoundAmbient() != null)
+		if(world.getSoundAmbient() != null && world.getSoundAmbient().length > 0)
 			if(timer++ > world.getAmbientFrequency() * (1 + ThreadLocalRandom.current().nextFloat())) {
 				world.getSoundAmbient()[ThreadLocalRandom.current().nextInt(world.getSoundAmbient().length)].playAll(world.getWorld());
 				timer = 0;

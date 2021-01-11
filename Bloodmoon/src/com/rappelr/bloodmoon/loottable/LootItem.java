@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import com.rappelr.bloodmoon.utils.ItemsAdderHook;
+import com.rappelr.bloodmoon.hook.ItemsAdderHook;
 
 import io.netty.util.internal.ThreadLocalRandom;
 import lombok.AccessLevel;
@@ -23,6 +23,10 @@ public class LootItem {
 	
 	static {
 		itemsAdderHook = new ItemsAdderHook();
+	}
+	
+	static void attemptHook() {
+		itemsAdderHook.attempt();
 	}
 	
 	@Getter
